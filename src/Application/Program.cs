@@ -4,5 +4,5 @@ namespace GGroupp.Infra.Sql.Migration.Application;
 
 static class Program
 {
-    static Task Main() => SqlMigrationApplication.RunAsync();
+    static Task Main(string[] args) => SqlMigrationApplication.RunAsync(args);
 }

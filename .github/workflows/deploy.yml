@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 7.0.x
           include-prerelease: false
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set output
         id: vars
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
@@ -35,7 +35,7 @@ jobs:
           --store-password-in-clear-text
 
       - name: Publish Application.csproj
-        run: dotnet publish ./src/*/Application.csproj -c Release -o './docker/publish'
+        run: dotnet publish ./src/*/Application.csproj -c Release -o './src/publish'
 
       - name: Login to Github Packages
         uses: docker/login-action@v1
@@ -47,7 +47,7 @@ jobs:
       - name: Build image and push to GitHub Container Registry
         uses: docker/build-push-action@v2
         with:
-          context: ./docker
+          context: ./src
           tags: |
             ghcr.io/ggrouppfoundation/infra-sql-migration-app:${{ steps.vars.outputs.tag }}
             ghcr.io/ggrouppfoundation/infra-sql-migration-app:latest

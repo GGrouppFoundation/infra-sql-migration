@@ -8,9 +8,9 @@ namespace GGroupp.Infra;
 
 internal static class SqlMigrationApplication
 {
-    public static async Task RunAsync()
+    public static async Task RunAsync(string[] args)
     {
-        using var serviceProvider = CreateServiceProvider();
+        using var serviceProvider = CreateServiceProvider(args);
         await RunMigrationsAsync(serviceProvider).ConfigureAwait(false);
     }
 
@@ -42,16 +42,16 @@ internal static class SqlMigrationApplication
         return new(connectionString);
     }
 
-    private static ServiceProvider CreateServiceProvider()
+    private static ServiceProvider CreateServiceProvider(string[] args)
         =>
         new ServiceCollection()
         .AddLogging(
             static builder => builder.AddConsole())
         .AddSingleton(
-            BuildConfiguration())
+            BuildConfiguration(args))
         .BuildServiceProvider();
 
-    private static IConfiguration BuildConfiguration()
+    private static IConfiguration BuildConfiguration(string[] args)
         =>
-        new ConfigurationBuilder().AddEnvironmentVariables().Build();
+        new ConfigurationBuilder().AddEnvironmentVariables().AddCommandLine(args).Build();
 }

@@ -9,12 +9,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>GGroupp.Infra</RootNamespace>
     <AssemblyName>GGroupp.Infra.Sql.Migration.Application</AssemblyName>
-    <Version>0.0.1-build.1</Version>
+    <Version>0.0.1-build.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="GGroupp.Infra.Sql.Api" Version="0.3.1" />
     <PackageReference Include="GGroupp.Infra.Sql.Api.Provider.Microsoft" Version="0.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="YamlDotNet" Version="12.0.2" />

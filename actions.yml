@@ -1,0 +1,23 @@
+name: 'GG SQL Migration'
+description: 'Run SQL Migrations'
+inputs:
+  connection-string:
+    description: 'The database connection string'
+    required: true
+  config-path:
+    description: 'The configuration yaml file path'
+    required: true
+    default: 'migrations.yml'
+  timeout:
+    description: 'Maximum time of the action'
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+  - '-ConnectionString'
+  - ${{ inputs.connection-string }}
+  - '-ConfigPath'
+  - ${{ inputs.config-path }}
+  - '-timeout'
+  - ${{ inputs.timeout }}

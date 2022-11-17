@@ -9,5 +9,5 @@ internal interface IDbChangeLogApi
 
     ValueTask<DbChangeLogId?> GetLastChangeLogIdAsync(CancellationToken cancellationToken);
 
-    ValueTask ExecuteMigrationQueryAsync(SqlMigrationItem migrationItem, CancellationToken cancellationToken);
+    ValueTask ExecuteMigrationAsync(SqlMigrationItem migrationItem, CancellationToken cancellationToken);
 }

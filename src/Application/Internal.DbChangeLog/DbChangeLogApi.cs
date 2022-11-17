@@ -8,21 +8,21 @@ namespace GGroupp.Infra;
 internal sealed class DbChangeLogApi : IDbChangeLogApi
 {
     private const string DbChangeLogCreateTableQuery = """
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='ChangeLogHistory' and xtype='U')
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='_ChangeLogHistory' and xtype='U')
             BEGIN
-            CREATE TABLE ChangeLogHistory( 
+            CREATE TABLE [_ChangeLogHistory]( 
                 [Id] varchar(100) NOT NULL,
                 [Comment] nvarchar (255) NULL,
                 [CreationTime] datetimeoffset NOT NULL DEFAULT SYSDATETIMEOFFSET(),
                 PRIMARY KEY (Id)
             );
-            CREATE INDEX ChangeLogHistoryCreationTimeIndex ON ChangeLogHistory(CreationTime DESC);
+            CREATE INDEX ChangeLogHistoryCreationTimeIndex ON [_ChangeLogHistory](CreationTime DESC);
             END
         """;
 
-    private const string DbChangeLogIdLastGetQuery = "SELECT TOP 1 Id From ChangeLogHistory ORDER BY CreationTime DESC;";
+    private const string DbChangeLogIdLastGetQuery = "SELECT TOP 1 Id From [_ChangeLogHistory] ORDER BY CreationTime DESC;";
 
-    private const string DbChangeLogInsertQuery = "INSERT INTO ChangeLogHistory(Id, Comment) VALUES (@Id, @Comment);";
+    private const string DbChangeLogInsertQuery = "INSERT INTO [_ChangeLogHistory](Id, Comment) VALUES (@Id, @Comment);";
 
     private readonly ISqlApi sqlApi;
 
@@ -54,14 +54,14 @@ internal sealed class DbChangeLogApi : IDbChangeLogApi
             null;
     }
 
-    public async ValueTask ExecuteMigrationQueryAsync(SqlMigrationItem migrationItem, CancellationToken cancellationToken)
+    public async ValueTask ExecuteMigrationAsync(SqlMigrationItem migrationItem, CancellationToken cancellationToken)
     {
         var migrationQuery = await ReadMigrationQueryAsync(migrationItem, cancellationToken).ConfigureAwait(false);
 
         var sqlRequest = new DbRequest(
             query: BuildMigrationTransactionQuery(migrationQuery),
             parameters: new FlatArray<DbParameter>(
-                new("Id", migrationItem.Id),
+                new("Id", migrationItem.Id ?? string.Empty),
                 new("Comment", migrationItem.Comment ?? string.Empty)));
 
         _ = await sqlApi.ExecuteNonQueryAsync(sqlRequest, cancellationToken).ConfigureAwait(false);
@@ -69,12 +69,12 @@ internal sealed class DbChangeLogApi : IDbChangeLogApi
 
     private ValueTask<string> ReadMigrationQueryAsync(SqlMigrationItem migrationItem, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(migrationItem.FilePath))
+        if (string.IsNullOrEmpty(migrationItem.Path))
         {
             return new(string.Empty);
         }
 
-        return new(fileReader.ReadMigrationQueryAsync(migrationItem.FilePath, cancellationToken));
+        return new(fileReader.ReadMigrationQueryAsync(migrationItem.Path, cancellationToken));
     }
 
     private static string BuildMigrationTransactionQuery(string migrationQuery)

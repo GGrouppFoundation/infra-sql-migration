@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>GGroupp.Infra</RootNamespace>
     <AssemblyName>GGroupp.Infra.Sql.Migration.Application</AssemblyName>
-    <Version>0.0.1-build.2</Version>
+    <Version>0.0.1-build.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
